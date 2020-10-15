@@ -1,6 +1,9 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
 
 import PendingTodosScreen from "../../screens/todos.screen";
 import PendingTodoDetailedScreen from "../../screens/todo-detailed.screen";
@@ -19,7 +22,7 @@ const Stack = createStackNavigator<PendingTodosNavParamsList>();
 const PendingTodosNavigator: React.FC = () => {
   return (
     <Stack.Navigator
-      screenOptions={({ navigation }) => {
+      screenOptions={({ navigation, route }) => {
         return {
           headerStyle: {
             backgroundColor: Colors.dark,
@@ -43,6 +46,48 @@ const PendingTodosNavigator: React.FC = () => {
                     onPress={navigation.goBack}
                   />
                 )}
+                <Item
+                  title="Menu"
+                  iconName="md-calendar"
+                  onPress={navigation.toggleDrawer}
+                />
+              </HeaderButtons>
+            );
+          },
+          headerTitle: () => {
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TextInput
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: "white",
+                    width: 100,
+                    textAlign: "center",
+                    color: "white",
+                  }}
+                />
+                <Ionicons name="md-search" size={23} color="white" />
+              </View>
+            );
+          },
+          headerRight: (props) => {
+            return (
+              <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item
+                  title="Save Todo"
+                  iconName="md-checkmark"
+                  onPress={navigation.toggleDrawer}
+                />
+                <Item
+                  title="Add Todo"
+                  iconName="md-add"
+                  onPress={() => navigation.navigate("PendingTodoEditScreen")}
+                />
               </HeaderButtons>
             );
           },
