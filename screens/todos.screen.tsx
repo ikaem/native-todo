@@ -1,13 +1,21 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 
 import { RootStateType } from "../store/store.provider";
 import { DefaultTodosScreenProps } from "./screen-types";
 import * as todosActions from "../store/actions/todos.actions";
 import Colors from "../constants/colors.constants";
+
+import TodoItem from "../components/todos/todo-item.component";
 
 interface TodosScreenProps extends DefaultTodosScreenProps {}
 
@@ -43,7 +51,17 @@ const TodosScreen: React.FC<TodosScreenProps> = ({ navigation, route }) => {
     }
   });
 
-  console.log(todos);
+  const onNavigateToTodoDetailed = (todoId: string) => {
+    navigation.navigate("PendingTodoDetailedScreen");
+  };
+
+  const onArchiveTodo = (todoId: string) => {
+    console.log("Archiving todo...");
+  };
+
+  const onCompleteTodo = (todoId: string) => {
+    console.log("Completing todo...");
+  };
 
   return (
     <View style={styles.screen}>
@@ -52,61 +70,19 @@ const TodosScreen: React.FC<TodosScreenProps> = ({ navigation, route }) => {
           <Text style={styles.todosCount}>{"7"}</Text>
           <Text style={styles.todosContext}> Todos today</Text>
         </View>
+
         <FlatList
           contentContainerStyle={styles.todoList}
           data={todos}
           keyExtractor={(todo) => todo.todoId}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity
-                style={styles.todoItem}
-                onPress={() => navigation.navigate("PendingTodoDetailedScreen")}
-              >
-                <View
-                  style={{ ...styles.todoItemDate, ...styles.todoItemSection }}
-                >
-                  <Text style={{ color: "white", fontSize: 24 }}>{"16"}</Text>
-                  <Text style={{ color: "white", textTransform: "uppercase" }}>
-                    {"January"}
-                  </Text>
-                  <Text style={{ color: "white" }}>{"2020"}</Text>
-                </View>
-                <View
-                  style={{
-                    ...styles.todoItemSummary,
-                    ...styles.todoItemSection,
-                  }}
-                >
-                  <Text style={styles.todoItemTitle}>{item.todoTitle}</Text>
-                  <Text style={styles.todoItemDescription}>
-                    {"Desscription, cut off...."}
-                  </Text>
-                  <Text style={styles.todoItemNoteCount}>
-                    {"&"} {"3"} other notes
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    ...styles.todoItemActions,
-                    ...styles.todoItemSection,
-                  }}
-                >
-                  <View style={styles.todoItemActionArchive}>
-                    <Text
-                      style={{ color: "white", textTransform: "uppercase" }}
-                    >
-                      Archive
-                    </Text>
-                  </View>
-                  <View style={styles.todoItemActionDone}>
-                    <Text
-                      style={{ color: "white", textTransform: "uppercase" }}
-                    >
-                      Done
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
+              <TodoItem
+                item={item}
+                onNavigateToTodoDetailed={onNavigateToTodoDetailed}
+                onArchiveTodo={onArchiveTodo}
+                onCompleteTodo={onCompleteTodo}
+              />
             );
           }}
         />
@@ -143,59 +119,59 @@ const styles = StyleSheet.create({
     width: "100%",
     marginVertical: 10,
   },
-  todoItem: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: Colors.gray,
-    marginVertical: 10,
-    elevation: 1,
-  },
-  todoItemSection: {
-    // padding: 5,
-  },
-  todoItemDate: {
-    padding: 5,
-    flex: 0.2,
-    alignItems: "center",
-    backgroundColor: Colors.orange,
-    elevation: 4,
-  },
-  todoItemSummary: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    flex: 0.6,
-    borderBottomColor: Colors.red,
-    justifyContent: "space-between",
-    borderBottomWidth: 3,
-  },
-  todoItemTitle: {
-    fontSize: 22,
-  },
-  todoItemDescription: {
-    color: Colors.textDarkGray,
-  },
-  todoItemNoteCount: {
-    color: Colors.textLightGray,
-    textTransform: "uppercase",
-    fontSize: 12,
-  },
-  todoItemActions: {
-    flex: 0.2,
-    elevation: 4,
-  },
-  todoItemActionArchive: {
-    flex: 0.5,
-    padding: 5,
-    justifyContent: "center",
-    backgroundColor: Colors.purple,
-    alignItems: "center",
-  },
-  todoItemActionDone: {
-    flex: 0.5,
-    padding: 5,
-    justifyContent: "center",
-    backgroundColor: Colors.blue,
-    alignItems: "center",
-  },
+  // todoItem: {
+  //   width: "100%",
+  //   flexDirection: "row",
+  //   justifyContent: "space-between",
+  //   backgroundColor: Colors.gray,
+  //   marginVertical: 10,
+  //   elevation: 1,
+  // },
+  // todoItemSection: {
+  //   // padding: 5,
+  // },
+  // todoItemDate: {
+  //   padding: 5,
+  //   flex: 0.2,
+  //   alignItems: "center",
+  //   backgroundColor: Colors.orange,
+  //   elevation: 4,
+  // },
+  // todoItemSummary: {
+  //   paddingVertical: 5,
+  //   paddingHorizontal: 10,
+  //   flex: 0.6,
+  //   borderBottomColor: Colors.red,
+  //   justifyContent: "space-between",
+  //   borderBottomWidth: 3,
+  // },
+  // todoItemTitle: {
+  //   fontSize: 22,
+  // },
+  // todoItemDescription: {
+  //   color: Colors.textDarkGray,
+  // },
+  // todoItemNoteCount: {
+  //   color: Colors.textLightGray,
+  //   textTransform: "uppercase",
+  //   fontSize: 12,
+  // },
+  // todoItemActions: {
+  //   flex: 0.2,
+  //   elevation: 4,
+  // },
+  // todoItemActionArchive: {
+  //   flex: 0.5,
+  //   padding: 5,
+  //   justifyContent: "center",
+  //   backgroundColor: Colors.purple,
+  //   alignItems: "center",
+  // },
+  // todoItemActionDone: {
+  //   flex: 0.5,
+  //   padding: 5,
+  //   justifyContent: "center",
+  //   backgroundColor: Colors.blue,
+  //   alignItems: "center",
+  // },
 });

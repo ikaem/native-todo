@@ -66,7 +66,6 @@ const TodoDetailedScreen = () => {
     </View>
   );
 };
-
 export default TodoDetailedScreen;
 
 const styles = StyleSheet.create({
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     padding: 20,
-    position: "relative",
+    // position: "relative",
     backgroundColor: Colors.pale,
   },
   todoContainer: {

@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { Text } from "react-native";
 import { enableScreens } from "react-native-screens";
 
 import AppProviders from "./providers/app.providers";
@@ -10,6 +11,7 @@ export default function App() {
   return (
     <>
       <StatusBar style="inverted" />
+      {/* <Text>Hello</Text> */}
       <AppProviders />
     </>
   );
