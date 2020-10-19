@@ -2,7 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Ionicons } from "@expo/vector-icons";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 import PendingTodosScreen from "../../screens/todos.screen";
@@ -13,8 +13,12 @@ import Colors from "../../constants/colors.constants";
 
 export type PendingTodosNavParamsList = {
   PendingTodosScreen: undefined;
-  PendingTodoDetailedScreen: undefined;
-  PendingTodoEditScreen: undefined;
+  PendingTodoDetailedScreen: {
+    todoId: string;
+  };
+  PendingTodoEditScreen: {
+    todoId?: string;
+  };
 };
 
 const Stack = createStackNavigator<PendingTodosNavParamsList>();

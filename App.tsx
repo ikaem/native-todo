@@ -11,7 +11,6 @@ export default function App() {
   return (
     <>
       <StatusBar style="inverted" />
-      {/* <Text>Hello</Text> */}
       <AppProviders />
     </>
   );

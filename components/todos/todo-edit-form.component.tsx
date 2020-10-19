@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Button, Modal, StyleSheet, Text, View } from "react-native";
 import {
   ScrollView,
   TextInput,
@@ -32,6 +32,10 @@ interface TodoEditFormProps {
   setDefaultDate: React.Dispatch<React.SetStateAction<Date>>;
   handleInputChange: (text: string, inputID: "title" | "description") => void;
   handleDateChange: (dateValue: Date | undefined) => void;
+  handleAddTodoNote: (text: string) => void;
+  handleDeleteTodoNote: (noteDate: Date) => void;
+  handleEditTodoNote: (note: TodoNoteInterface) => void;
+  handleSubmitTodo: () => void;
 }
 
 const TodoEditForm: React.FC<TodoEditFormProps> = ({
@@ -49,7 +53,14 @@ const TodoEditForm: React.FC<TodoEditFormProps> = ({
   setDefaultDate,
   handleInputChange,
   handleDateChange,
+  handleAddTodoNote,
+  handleDeleteTodoNote,
+  handleEditTodoNote,
+  handleSubmitTodo,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newTodoNoteText, setnewTodoNoteText] = useState("");
+
   return (
     <View style={styles.screen}>
       <ScrollView style={styles.todoContainer}>
@@ -92,15 +103,15 @@ const TodoEditForm: React.FC<TodoEditFormProps> = ({
             value={defaultDate}
             mode={mode}
             is24Hour={true}
-            onChange={(event, selectedDate) => {
-              // const currentDate = selectedDate || defaultDate;
-              handleDateChange(selectedDate);
-
+            onChange={(_, selectedDate) => {
+              // shutting down the picker
               setDateTimePickerOptions((prev) => ({
                 ...prev,
                 isDatePickerShown: false,
               }));
-              // setDefaultDate(currentDate);
+
+              // handling change
+              handleDateChange(selectedDate);
             }}
           />
         )}
@@ -111,10 +122,46 @@ const TodoEditForm: React.FC<TodoEditFormProps> = ({
             name="md-add-circle"
             size={28}
             color={Colors.purple}
-            onPress={() => console.log("yeah")}
-            style={{ marginLeft: 10 }}
+            onPress={() => {
+              console.log("this is notes", notes);
+              setIsModalVisible(true);
+            }}
           />
         </View>
+        <Modal visible={isModalVisible}>
+          <View style={styles.addNoteModal}>
+            <Text style={styles.addNoteModalLabel}>Add Note</Text>
+            <View style={styles.addNoteModalInputContainer}>
+              <TextInput
+                style={styles.addNoteModalInput}
+                multiline={true}
+                underlineColorAndroid="transparent"
+                onChangeText={(text) => setnewTodoNoteText(text)}
+              />
+            </View>
+
+            <View style={styles.addNoteModalActions}>
+              <Button
+                title="Submit"
+                onPress={() => {
+                  handleAddTodoNote(newTodoNoteText);
+                  console.log("this is nte state value", newTodoNoteText);
+                  if (newTodoNoteText.trim()) {
+                    setIsModalVisible(false);
+                    setnewTodoNoteText("");
+                  }
+                }}
+              />
+              <Button
+                title="Cancel"
+                onPress={() => {
+                  setnewTodoNoteText("");
+                  setIsModalVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </Modal>
         <View style={styles.todoNotesList}>
           <View style={styles.todoNote}>
             <Text style={styles.todoNoteContent}>This is a note</Text>
@@ -125,7 +172,10 @@ const TodoEditForm: React.FC<TodoEditFormProps> = ({
             return (
               <TodoItemNote
                 note={note}
+                key={note.noteDate.toISOString()}
                 outputDateTimeString={outputDateTimeString}
+                handleDeleteTodoNote={handleDeleteTodoNote}
+                handleEditTodoNote={handleEditTodoNote}
               />
             );
           })}
@@ -139,6 +189,7 @@ const TodoEditForm: React.FC<TodoEditFormProps> = ({
               ...styles.todoActionButton,
               backgroundColor: Colors.purple,
             }}
+            onPress={handleSubmitTodo}
           >
             <Text style={styles.todoActionButtonText}>Save</Text>
           </TouchableOpacity>
@@ -207,6 +258,38 @@ const styles = StyleSheet.create({
     color: Colors.pale,
     fontSize: 20,
   },
+  addNoteModal: {
+    flex: 1,
+    padding: 20,
+    width: "100%",
+    justifyContent: "center",
+  },
+
+  addNoteModalLabel: {
+    textAlign: "center",
+    fontSize: 18,
+    textTransform: "uppercase",
+    color: Colors.textLightGray,
+  },
+
+  addNoteModalInputContainer: {
+    marginVertical: 20,
+  },
+
+  addNoteModalInput: {
+    width: "100%",
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: 1,
+    fontSize: 16,
+    padding: 10,
+  },
+
+  addNoteModalActions: {
+    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+
   todoNotesLabelContainer: {
     marginVertical: 10,
     flexDirection: "row",
@@ -220,10 +303,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textTransform: "uppercase",
     color: Colors.textLightGray,
+    marginRight: 10,
   },
 
   todoNotesList: {
     width: "100%",
+    marginBottom: 40,
   },
 
   todoNote: {

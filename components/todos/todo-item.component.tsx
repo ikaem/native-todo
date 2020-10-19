@@ -10,6 +10,7 @@ interface TodoItemProps {
   onNavigateToTodoDetailed: (todoId: string) => void;
   onArchiveTodo: (todoId: string) => void;
   onCompleteTodo: (todoId: string) => void;
+  onHandleArchiveTodo: (todoId: string) => void;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
@@ -17,6 +18,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   onNavigateToTodoDetailed,
   onArchiveTodo,
   onCompleteTodo,
+  onHandleArchiveTodo,
 }) => {
   return (
     <TouchableOpacity
@@ -56,7 +58,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
           </Text>
         </View>
         <View style={styles.todoItemActionDone}>
-          <Text style={{ color: "white", textTransform: "uppercase" }}>
+          <Text
+            onPress={() => onHandleArchiveTodo(item.todoId)}
+            style={{ color: "white", textTransform: "uppercase" }}
+          >
             Done
           </Text>
         </View>

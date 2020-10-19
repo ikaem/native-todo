@@ -1,16 +1,78 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useDispatch, useSelector } from "react-redux";
 
 import Colors from "../constants/colors.constants";
+import { DefaultTodoDetailedScreenProps } from "./screen-types";
+import * as todosActions from "../store/actions/todos.actions";
+import { RootStateType } from "../store/store.provider";
 
-const TodoDetailedScreen = () => {
+import Center from "../components/UI/center.component";
+import CustomHeaderButton from "../components/UI/custom-header-button.componen";
+
+interface TodoDetailedScreenProps extends DefaultTodoDetailedScreenProps {}
+
+const TodoDetailedScreen: React.FC<TodoDetailedScreenProps> = ({
+  navigation,
+  route,
+}) => {
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item
+              title="Edit"
+              iconName="md-create"
+              onPress={() =>
+                navigation.navigate("PendingTodoEditScreen", { todoId })
+              }
+            />
+          </HeaderButtons>
+        );
+      },
+    });
+  }, [navigation]);
+
+  const { todoId } = route.params;
+  const routeName = route.name;
+
+  const dispatch = useDispatch();
+
+  const todoDetailed = useSelector((state: RootStateType) => {
+    switch (routeName) {
+      case "PendingTodoDetailedScreen":
+        return state.todos.pending.find((todo) => todo.todoId === todoId);
+      case "CompletedTodoDetailedScreen":
+        return state.todos.completed.find((todo) => todo.todoId === todoId);
+      default:
+        return undefined;
+    }
+  });
+
+  const onHandleArchiveTodo = (todoId: string) => {
+    dispatch(todosActions.thunkArchiveTodo(todoId));
+    navigation.navigate("PendingTodosScreen");
+  };
+
+  if (!todoDetailed)
+    return (
+      <Center>
+        <Text>
+          No such task, unfortunately. Which, I guess, means your schedule is
+          empty. Nice job.
+        </Text>
+      </Center>
+    );
+
   return (
     <View style={styles.screen}>
       <ScrollView style={styles.todoContainer}>
         <View style={styles.todoTitleContainer}>
-          <Text style={styles.todoTitle}>Todo Title</Text>
+          <Text style={styles.todoTitle}>{todoDetailed.todoTitle}</Text>
         </View>
         <View style={styles.todoDescriptionContainer}>
           <Text style={styles.todoDescription}>
@@ -52,7 +114,12 @@ const TodoDetailedScreen = () => {
               backgroundColor: Colors.purple,
             }}
           >
-            <Text style={styles.todoActionButtonText}>Archive</Text>
+            <Text
+              onPress={() => onHandleArchiveTodo(todoId)}
+              style={styles.todoActionButtonText}
+            >
+              Archive
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.todoActionWrapper}>

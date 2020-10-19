@@ -10,8 +10,12 @@ import Colors from "../../constants/colors.constants";
 
 export type CompletedTodosNavParamsList = {
   CompletedTodosScreen: undefined;
-  CompletedTodoDetailedScreen: undefined;
-  CompletedTodoEditScreen: undefined;
+  CompletedTodoDetailedScreen: {
+    todoId: string;
+  };
+  CompletedTodoEditScreen: {
+    todoId: string;
+  };
 };
 
 const Stack = createStackNavigator<CompletedTodosNavParamsList>();
@@ -49,7 +53,10 @@ const CompletedTodosNavigator: React.FC = () => {
         };
       }}
     >
-      <Stack.Screen name="CompletedTodosScreen" component={CompletedTodosScreen} />
+      <Stack.Screen
+        name="CompletedTodosScreen"
+        component={CompletedTodosScreen}
+      />
       <Stack.Screen
         name="CompletedTodoDetailedScreen"
         component={CompletedTodoDetailedScreen}

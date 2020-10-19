@@ -16,3 +16,25 @@ export interface DefaultTodosScreenProps {
     "PendingTodosScreen" | "CompletedTodosScreen"
   >;
 }
+
+export interface DefaultTodoDetailedScreenProps {
+  navigation: StackNavigationProp<
+    StackNavigationsParamsLists,
+    "PendingTodoDetailedScreen" | "CompletedTodoDetailedScreen"
+  >;
+  route: RouteProp<
+    StackNavigationsParamsLists,
+    "PendingTodoDetailedScreen" | "CompletedTodoDetailedScreen"
+  >;
+}
+
+export interface DefaultTodoEditScreenProps {
+  navigation: StackNavigationProp<
+    StackNavigationsParamsLists,
+    "PendingTodoEditScreen" | "CompletedTodoEditScreen"
+  >;
+  route: RouteProp<
+    StackNavigationsParamsLists,
+    "PendingTodoEditScreen" | "CompletedTodoEditScreen"
+  >;
+}

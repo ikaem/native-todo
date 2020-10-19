@@ -51,8 +51,14 @@ const TodosScreen: React.FC<TodosScreenProps> = ({ navigation, route }) => {
     }
   });
 
+  const onHandleArchiveTodo = (todoId: string) => {
+    dispatch(todosActions.thunkArchiveTodo(todoId));
+  };
+
   const onNavigateToTodoDetailed = (todoId: string) => {
-    navigation.navigate("PendingTodoDetailedScreen");
+    navigation.navigate("PendingTodoDetailedScreen", {
+      todoId,
+    });
   };
 
   const onArchiveTodo = (todoId: string) => {
@@ -82,6 +88,7 @@ const TodosScreen: React.FC<TodosScreenProps> = ({ navigation, route }) => {
                 onNavigateToTodoDetailed={onNavigateToTodoDetailed}
                 onArchiveTodo={onArchiveTodo}
                 onCompleteTodo={onCompleteTodo}
+                onHandleArchiveTodo={onHandleArchiveTodo}
               />
             );
           }}
