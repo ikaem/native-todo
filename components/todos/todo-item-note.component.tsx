@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import { Button, Modal, StyleSheet, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { set } from "react-native-reanimated";
 
+import outputDateTime from "../../helpers/output-date-time";
 import Colors from "../../constants/colors.constants";
 import { TodoNoteInterface } from "../../screens/todo-edit.screen";
+import NoteInputModal from "./note-input-modal.component";
 
 interface TodoItemNoteProps {
   note: TodoNoteInterface;
-  outputDateTimeString: (dateObject: Date, mode: "date" | "time") => string;
   handleDeleteTodoNote: (noteDate: Date) => void;
   handleEditTodoNote: (note: TodoNoteInterface) => void;
 }
 
 const TodoItemNote: React.FC<TodoItemNoteProps> = ({
   note,
-  outputDateTimeString,
   handleDeleteTodoNote,
   handleEditTodoNote,
 }) => {
@@ -28,10 +27,7 @@ const TodoItemNote: React.FC<TodoItemNoteProps> = ({
     <View style={styles.todoNoteItem}>
       <View style={styles.todoNote}>
         <Text style={styles.todoNoteContent}>{note.noteContent}</Text>
-        <Text style={styles.todoNoteDate}>
-          {outputDateTimeString(note.noteDate, "date")} -{" "}
-          {outputDateTimeString(note.noteDate, "time")}
-        </Text>
+        <Text style={styles.todoNoteDate}>{outputDateTime(note.noteDate)}</Text>
       </View>
       <View style={styles.todoNoteItemActions}>
         <View
@@ -59,7 +55,15 @@ const TodoItemNote: React.FC<TodoItemNoteProps> = ({
           </TouchableOpacity>
         </View>
       </View>
-      <Modal visible={isEditModalVisible}>
+
+      <NoteInputModal
+        isModalVisible={isEditModalVisible}
+        setIsModalVisible={setIsEditModalVisible}
+        onHandleSubmitInput={handleEditTodoNote}
+        note={note}
+      />
+
+      {/* <Modal visible={isEditModalVisible}>
         <View style={styles.editNoteModal}>
           <Text style={styles.editNoteModalLabel}>Edit Note</Text>
           <View style={styles.editNoteModalInputContainer}>
@@ -94,7 +98,7 @@ const TodoItemNote: React.FC<TodoItemNoteProps> = ({
             />
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </View>
   );
 };
@@ -105,12 +109,10 @@ const styles = StyleSheet.create({
   todoNoteItem: {
     flexDirection: "row",
     width: "100%",
-    // flex: 1,
     justifyContent: "space-between",
     marginVertical: 5,
   },
   todoNote: {
-    // width: "70%",
     flex: 0.8,
     padding: 10,
     backgroundColor: Colors.gray,
@@ -127,13 +129,9 @@ const styles = StyleSheet.create({
     color: Colors.textLightGray,
   },
   todoNoteItemActions: {
-    // width: "30%",
     flex: 0.2,
-    // height: "100%",
-    // justifyContent: ""
   },
   todoNoteItemAction: {
-    // padding: 5,
     justifyContent: "center",
     alignItems: "center",
     flex: 0.5,

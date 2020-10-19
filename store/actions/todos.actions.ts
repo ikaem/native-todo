@@ -58,17 +58,18 @@ const setTodos = (
   };
 };
 
-export const thunkSetTodos = (): ThunkAction<
+export const thunkSetPendingTodos = (): ThunkAction<
   void,
   RootStateType,
   unknown,
   Action<SET_PENDING_TODOS_IDENTIFIER>
 > => {
   return async (dispatch) => {
-    const pendingTodos = todos.filter((todo) => {
-      return !todo.isCompleted;
-    });
-
+    const pendingTodos = todos
+      .filter((todo) => {
+        return !todo.isCompleted;
+      })
+      .sort((a, b) => (a.todoDate > b.todoDate ? 1 : -1));
     dispatch(setTodos(pendingTodos));
   };
 };
@@ -87,6 +88,9 @@ export const thunkAddTodo = (
     const newTodo = new Todo(
       new Date().toISOString(),
       todoData.todoTitle,
+      todoData.todoDate,
+      todoData.todoDescription,
+      todoData.todoNotes,
       false
     );
 
@@ -108,6 +112,9 @@ export const thunkEditTodo = (
     const editedTodo = new Todo(
       todoData.todoId,
       todoData.todoTitle,
+      todoData.todoDate,
+      todoData.todoDescription,
+      todoData.todoNotes,
       todoData.isCompleted
     );
     dispatch(editTodo(editedTodo));

@@ -22,10 +22,10 @@ interface TodosScreenProps extends DefaultTodosScreenProps {}
 const setMatchingTodos = (routeName: string, dispatch: Dispatch<any>) => {
   switch (routeName) {
     case "PendingTodosScreen":
-      dispatch(todosActions.thunkSetTodos());
+      dispatch(todosActions.thunkSetPendingTodos());
       return;
     case "CompletedTodosScreen":
-      dispatch(todosActions.thunkSetTodos());
+      // dispatch(todosActions.thunkSetTodos());
       return;
     default:
       return;
@@ -43,11 +43,13 @@ const TodosScreen: React.FC<TodosScreenProps> = ({ navigation, route }) => {
   const todos = useSelector((state: RootStateType) => {
     switch (routeName) {
       case "PendingTodosScreen":
-        return state.todos.pending;
+        return state.todos.allTodos.filter(
+          (todo) => todo.isCompleted === false
+        );
       case "CompletedTodosScreen":
-        return state.todos.completed;
+        return state.todos.allTodos.filter((todo) => todo.isCompleted === true);
       default:
-        return [];
+        return state.todos.allTodos;
     }
   });
 
@@ -125,60 +127,6 @@ const styles = StyleSheet.create({
   todoList: {
     width: "100%",
     marginVertical: 10,
+    paddingBottom: 150,
   },
-  // todoItem: {
-  //   width: "100%",
-  //   flexDirection: "row",
-  //   justifyContent: "space-between",
-  //   backgroundColor: Colors.gray,
-  //   marginVertical: 10,
-  //   elevation: 1,
-  // },
-  // todoItemSection: {
-  //   // padding: 5,
-  // },
-  // todoItemDate: {
-  //   padding: 5,
-  //   flex: 0.2,
-  //   alignItems: "center",
-  //   backgroundColor: Colors.orange,
-  //   elevation: 4,
-  // },
-  // todoItemSummary: {
-  //   paddingVertical: 5,
-  //   paddingHorizontal: 10,
-  //   flex: 0.6,
-  //   borderBottomColor: Colors.red,
-  //   justifyContent: "space-between",
-  //   borderBottomWidth: 3,
-  // },
-  // todoItemTitle: {
-  //   fontSize: 22,
-  // },
-  // todoItemDescription: {
-  //   color: Colors.textDarkGray,
-  // },
-  // todoItemNoteCount: {
-  //   color: Colors.textLightGray,
-  //   textTransform: "uppercase",
-  //   fontSize: 12,
-  // },
-  // todoItemActions: {
-  //   flex: 0.2,
-  //   elevation: 4,
-  // },
-  // todoItemActionArchive: {
-  //   flex: 0.5,
-  //   padding: 5,
-  //   justifyContent: "center",
-  //   backgroundColor: Colors.purple,
-  //   alignItems: "center",
-  // },
-  // todoItemActionDone: {
-  //   flex: 0.5,
-  //   padding: 5,
-  //   justifyContent: "center",
-  //   backgroundColor: Colors.blue,
-  //   alignItems: "center",
-  // },
 });

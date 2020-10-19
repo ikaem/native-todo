@@ -14,6 +14,7 @@ import {
   TodoNoteInterface,
 } from "../../screens/todo-edit.screen";
 import TodoItemNote from "./todo-item-note.component";
+import outputDateTime from "../../helpers/output-date-time";
 
 interface TodoEditFormProps {
   title: string;
@@ -86,14 +87,14 @@ const TodoEditForm: React.FC<TodoEditFormProps> = ({
           <View style={styles.todoDateContainer}>
             <Text style={styles.todoDate} onPress={() => showDatePicker()}>
               <Text style={{ color: "white", fontWeight: "700" }}>
-                {outputDateTimeString(date, "date")}
+                {outputDateTime(date, "fullDate")}
               </Text>
             </Text>
           </View>
           <View style={styles.todoDateContainer}>
             <Text style={styles.todoDate} onPress={() => showTimePicker()}>
               <Text style={{ color: "white", fontWeight: "700" }}>
-                {outputDateTimeString(date, "time")}
+                {outputDateTime(date, "time")}
               </Text>
             </Text>
           </View>
@@ -173,7 +174,6 @@ const TodoEditForm: React.FC<TodoEditFormProps> = ({
               <TodoItemNote
                 note={note}
                 key={note.noteDate.toISOString()}
-                outputDateTimeString={outputDateTimeString}
                 handleDeleteTodoNote={handleDeleteTodoNote}
                 handleEditTodoNote={handleEditTodoNote}
               />

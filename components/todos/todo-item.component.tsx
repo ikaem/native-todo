@@ -1,9 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Colors from "../../constants/colors.constants";
 
+import Colors from "../../constants/colors.constants";
 import { TodoModelInterface } from "../../models/todo.model";
+import outputDateTime from "../../helpers/output-date-time";
 
 interface TodoItemProps {
   item: TodoModelInterface;
@@ -26,11 +27,15 @@ const TodoItem: React.FC<TodoItemProps> = ({
       onPress={() => onNavigateToTodoDetailed(item.todoId)}
     >
       <View style={{ ...styles.todoItemDate, ...styles.todoItemSection }}>
-        <Text style={{ color: "white", fontSize: 24 }}>{"16"}</Text>
-        <Text style={{ color: "white", textTransform: "uppercase" }}>
-          {"January"}
+        <Text style={{ color: "white", fontSize: 24 }}>
+          {outputDateTime(item.todoDate, "date")}
         </Text>
-        <Text style={{ color: "white" }}>{"2020"}</Text>
+        <Text style={{ color: "white", textTransform: "uppercase" }}>
+          {outputDateTime(item.todoDate, "month")}
+        </Text>
+        <Text style={{ color: "white" }}>
+          {outputDateTime(item.todoDate, "year")}
+        </Text>
       </View>
       <View
         style={{
@@ -40,11 +45,14 @@ const TodoItem: React.FC<TodoItemProps> = ({
       >
         <Text style={styles.todoItemTitle}>{item.todoTitle}</Text>
         <Text style={styles.todoItemDescription}>
-          {"Desscription, cut off...."}
+          {item.todoDescripton.substring(0, 24)}{" "}
+          {item.todoDescripton.length > 24 && "..."}
         </Text>
-        <Text style={styles.todoItemNoteCount}>
-          {"&"} {"3"} other notes
-        </Text>
+        {item.todoNotes.length ? (
+          <Text style={styles.todoItemNoteCount}>
+            {"&"} {item.todoNotes.length} other notes
+          </Text>
+        ) : null}
       </View>
       <View
         style={{
@@ -86,7 +94,7 @@ const styles = StyleSheet.create({
   },
   todoItemDate: {
     padding: 5,
-    flex: 0.2,
+    flex: 0.25,
     alignItems: "center",
     backgroundColor: Colors.orange,
     elevation: 4,
@@ -94,7 +102,7 @@ const styles = StyleSheet.create({
   todoItemSummary: {
     paddingVertical: 5,
     paddingHorizontal: 10,
-    flex: 0.6,
+    flex: 0.5,
     borderBottomColor: Colors.red,
     justifyContent: "space-between",
     borderBottomWidth: 3,
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   todoItemActions: {
-    flex: 0.2,
+    flex: 0.25,
     elevation: 4,
   },
   todoItemActionArchive: {

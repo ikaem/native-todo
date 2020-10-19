@@ -433,7 +433,7 @@ const TodoEditScreen: React.FC<TodoEditScreenProps> = ({
   };
 
   const handleEditTodoNote = (note: TodoNoteInterface) => {
-    console.log("editing note from", note.noteDate);
+    if (!note.noteContent) return;
     dispatchFormState(editNote(note));
   };
 

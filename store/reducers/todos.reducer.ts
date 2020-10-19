@@ -34,34 +34,37 @@ const todosReducer = (
 ) => {
   switch (action.type) {
     case SET_PENDING_TODOS:
-      const { payload } = action;
+      const newSPTPending = action.payload;
+
       const newState = {
         ...state,
-        pending: payload,
-
-        // .sort((a, b) => (b.todoDate > a.todoDate ? 1 : -1));
+        pending: newSPTPending,
+        allTodos: [...state.allTodos, ...newSPTPending],
       };
       return newState;
 
     case ADD_TODO:
-      const { payload: newTodo } = action;
+      const { payload: newATTodo } = action;
 
-      const newATPending = [...state.pending, newTodo];
+      const newATTodos = [...state.allTodos, newATTodo].sort((a, b) => (a.todoDate > b.todoDate ? 1 : -1));
 
       return {
         ...state,
-        pending: newATPending,
+        allTodos: newATTodos,
       };
 
     case EDIT_TODO:
       const {
         todoId: newETTodoId,
         todoTitle: newETTodoTitle,
+        todoDate: newETTodoDate,
+        todoDescripton: newETTodoDescription,
+        todoNotes: newETTodoNotes,
         isCompleted: newETIsCompleted,
       } = action.payload;
 
       try {
-        const oldETTodoIndex = state.pending.findIndex(
+        const oldETTodoIndex = state.allTodos.findIndex(
           (todo) => todo.todoId === newETTodoId
         );
 
@@ -70,15 +73,18 @@ const todosReducer = (
         const newETTodo = new Todo(
           newETTodoId,
           newETTodoTitle,
+          newETTodoDate,
+          newETTodoDescription,
+          newETTodoNotes,
           newETIsCompleted
         );
 
-        const newETTodoPending = [...state.pending];
-        newETTodoPending[oldETTodoIndex] = newETTodo;
+        const newETTodos = [...state.allTodos];
+        newETTodos[oldETTodoIndex] = newETTodo;
 
         return {
           ...state,
-          pending: newETTodoPending,
+          allTodos: newETTodos,
         };
       } catch (error) {
         console.log(error);
@@ -89,20 +95,20 @@ const todosReducer = (
       const newArcTTodoID = action.payload;
 
       try {
-        const deletedArchTTodoIndex = state.pending.findIndex(
+        const deletedArchTTodoIndex = state.allTodos.findIndex(
           (todo) => todo.todoId === newArcTTodoID
         );
 
         if (deletedArchTTodoIndex < 0) throw new Error("No such todo");
 
-        const newArcTPending = [...state.pending];
-        newArcTPending.splice(deletedArchTTodoIndex, 1);
+        const newArcTAllTodos = [...state.allTodos];
+        newArcTAllTodos.splice(deletedArchTTodoIndex, 1);
 
-        console.log("spliced todo", newArcTPending);
+        console.log("spliced todo", newArcTAllTodos);
 
         return {
           ...state,
-          pending: newArcTPending,
+          allTodos: newArcTAllTodos,
         };
       } catch (error) {
         console.log(error);

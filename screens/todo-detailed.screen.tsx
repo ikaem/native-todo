@@ -12,6 +12,8 @@ import { RootStateType } from "../store/store.provider";
 
 import Center from "../components/UI/center.component";
 import CustomHeaderButton from "../components/UI/custom-header-button.componen";
+import outputDateTime from "../helpers/output-date-time";
+import TodoItemNote from "../components/todos/todo-item-note.component";
 
 interface TodoDetailedScreenProps extends DefaultTodoDetailedScreenProps {}
 
@@ -43,14 +45,7 @@ const TodoDetailedScreen: React.FC<TodoDetailedScreenProps> = ({
   const dispatch = useDispatch();
 
   const todoDetailed = useSelector((state: RootStateType) => {
-    switch (routeName) {
-      case "PendingTodoDetailedScreen":
-        return state.todos.pending.find((todo) => todo.todoId === todoId);
-      case "CompletedTodoDetailedScreen":
-        return state.todos.completed.find((todo) => todo.todoId === todoId);
-      default:
-        return undefined;
-    }
+    return state.todos.allTodos.find((todo) => todo.todoId === todoId);
   });
 
   const onHandleArchiveTodo = (todoId: string) => {
@@ -76,17 +71,25 @@ const TodoDetailedScreen: React.FC<TodoDetailedScreenProps> = ({
         </View>
         <View style={styles.todoDescriptionContainer}>
           <Text style={styles.todoDescription}>
-            Todo Description a little bit longer stuff that just won't stop
+            {todoDetailed.todoDescripton}
           </Text>
         </View>
-        <View style={styles.todoDateContainer}>
-          <Text style={styles.todoDate}>
-            Due Date:{" "}
-            <Text style={{ color: "white", fontWeight: "700" }}>
-              {" "}
-              23.08.2020
+
+        <View style={styles.todoDateWrapper}>
+          <View style={styles.todoDateContainer}>
+            <Text style={styles.todoDate}>
+              <Text style={{ color: "white", fontWeight: "700" }}>
+                {outputDateTime(todoDetailed.todoDate, "fullDate")}
+              </Text>
             </Text>
-          </Text>
+          </View>
+          <View style={styles.todoDateContainer}>
+            <Text style={styles.todoDate}>
+              <Text style={{ color: "white", fontWeight: "700" }}>
+                {outputDateTime(todoDetailed.todoDate, "time")}
+              </Text>
+            </Text>
+          </View>
         </View>
         <View style={styles.todoNotesLabelContainer}>
           <Text style={styles.todoNotesLabel}>Notes</Text>
@@ -99,10 +102,17 @@ const TodoDetailedScreen: React.FC<TodoDetailedScreenProps> = ({
           />
         </View>
         <View style={styles.todoNotesList}>
-          <View style={styles.todoNote}>
-            <Text style={styles.todoNoteContent}>This is a note</Text>
-            <Text style={styles.todoNoteDate}>23.4.2020</Text>
-          </View>
+
+          {todoDetailed.todoNotes.map((note) => {
+            return (
+              <TodoItemNote
+                note={note}
+                key={note.noteDate.toISOString()}
+                handleDeleteTodoNote={() => {}}
+                handleEditTodoNote={() => {}}
+              />
+            );
+          })}
         </View>
       </ScrollView>
 
@@ -162,18 +172,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-  todoDateContainer: {
-    padding: 20,
+  todoDateWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginVertical: 10,
+  },
+
+  todoDateContainer: {
+    padding: 10,
+
     alignItems: "center",
-    width: "100%",
+    width: "48%",
     backgroundColor: Colors.orange,
     borderRadius: 5,
     elevation: 2,
   },
   todoDate: {
     color: Colors.pale,
-    fontSize: 22,
+    fontSize: 20,
   },
   todoNotesLabelContainer: {
     marginVertical: 10,
